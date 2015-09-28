@@ -13,6 +13,7 @@ public class Song {
     private String mAlbum;
     private int mDuration;
     private int mBPM;
+    private boolean mUseInApp;
 
     public String getPath() {
         return mPath;
@@ -52,5 +53,21 @@ public class Song {
 
     public void setDuration(int duration) {
         mDuration = duration;
+    }
+
+    public int getBPM() {
+        return mBPM;
+    }
+
+    public void setBPM(int BPM) {
+        mBPM = BPM;
+    }
+
+    public boolean isUseInApp() {
+        return mUseInApp;
+    }
+
+    public void setUseInApp(boolean useInApp) {
+        mUseInApp = useInApp;
     }
 }

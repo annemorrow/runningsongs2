@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +14,13 @@ import java.util.List;
  * Created by anne on 9/23/15.
  */
 public class SongLibrary {
-    private List<Song> mSongs;
+    public static final String TAG = "SongLibrary";
+
+    private List<Song> mSongs; // ones the user has chosen to be part of the running app
+    private List<Song> mAllSongs; // songs found on the device (that the user may then choose to be in the running app)
     private MediaPlayer mMediaPlayer;
+
+    private Song selected;
 
 
 
@@ -48,6 +54,7 @@ public class SongLibrary {
                 null,
                 null);
 
+
         while(cursor.moveToNext()) {
             Song foundSong = new Song();
             foundSong.setTitle(cursor.getString(2));
@@ -55,10 +62,13 @@ public class SongLibrary {
             foundSong.setArtist(cursor.getString(1));
             foundSong.setPath(cursor.getString(3));
             foundSong.setDuration(cursor.getInt(5));
-            if (!songInList(foundSong)) {
-                mSongs.add(foundSong);
-            }
+            Log.d(TAG, foundSong.getTitle());
+            Log.d(TAG, foundSong.getPath());
+            selected = foundSong;
         }
+
+        play(selected);
+
     }
 
     private boolean songInList(Song song) {
