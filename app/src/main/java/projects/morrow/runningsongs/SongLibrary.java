@@ -1,6 +1,5 @@
 package projects.morrow.runningsongs;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.media.MediaPlayer;
@@ -14,15 +13,30 @@ import java.util.List;
  * Created by anne on 9/23/15.
  */
 public class SongLibrary {
+    private static SongLibrary sSongLibrary;
+
     public static final String TAG = "SongLibrary";
 
     private List<Song> mSongs; // ones the user has chosen to be part of the running app
     private List<Song> mAllSongs; // songs found on the device (that the user may then choose to be in the running app)
     private MediaPlayer mMediaPlayer;
 
-    private Song selected;
 
+    public static SongLibrary get(Context context) {
+        if (sSongLibrary == null) {
+            sSongLibrary = new SongLibrary(context);
+        }
+        sSongLibrary.mAllSongs = new ArrayList<>();
+        return sSongLibrary;
+    }
 
+    private SongLibrary(Context context) {
+        mSongs = new ArrayList<>();
+    }
+
+    public List<Song> getSongs() {
+        return mAllSongs;
+    }
 
     public void play(Song song){
         mMediaPlayer = new MediaPlayer();
@@ -64,10 +78,12 @@ public class SongLibrary {
             foundSong.setDuration(cursor.getInt(5));
             Log.d(TAG, foundSong.getTitle());
             Log.d(TAG, foundSong.getPath());
-            selected = foundSong;
+            if (songInList(foundSong)) {
+                foundSong.setUseInApp(true);
+            }
+            mAllSongs.add(foundSong);
         }
 
-        play(selected);
 
     }
 
