@@ -50,14 +50,26 @@ public class LoadSongsFragment extends Fragment {
     }
 
 
-    private class SongHolder extends RecyclerView.ViewHolder {
+    private class SongHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        public TextView mTitleTextView;
+        private TextView mTitleTextView;
+        private Song mSong;
 
         public SongHolder(View itemView) {
             super(itemView);
 
             mTitleTextView = (TextView) itemView;
+            mTitleTextView.setOnClickListener(this);
+        }
+
+        public void bindSong(Song song) {
+            mSong = song;
+            mTitleTextView.setText(song.getTitle());
+        }
+
+        @Override
+        public void onClick(View v) {
+            mSongLibrary.play(mSong);
         }
     }
 
@@ -80,7 +92,7 @@ public class LoadSongsFragment extends Fragment {
         @Override
         public void onBindViewHolder(SongHolder holder, int position) {
             Song song = mSongs.get(position);
-            holder.mTitleTextView.setText(song.getTitle());
+            holder.bindSong(song);
         }
 
         @Override

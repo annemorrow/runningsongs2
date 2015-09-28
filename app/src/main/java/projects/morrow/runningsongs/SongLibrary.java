@@ -39,7 +39,14 @@ public class SongLibrary {
     }
 
     public void play(Song song){
-        mMediaPlayer = new MediaPlayer();
+        if (mMediaPlayer != null) {
+            try {
+                mMediaPlayer.stop();
+            } finally {
+
+            }
+        }
+            mMediaPlayer = new MediaPlayer();
         try {
             mMediaPlayer.setDataSource(song.getPath());
             mMediaPlayer.prepare();
