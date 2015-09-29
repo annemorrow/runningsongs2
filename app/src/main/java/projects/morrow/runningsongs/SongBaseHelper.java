@@ -20,7 +20,7 @@ public class SongBaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("create table " + SongTable.NAME + "(" +
-                " _id integer primary ke autoincrement, " +
+                " _id integer primary key autoincrement, " +
                 SongTable.Cols.UUID + ", " +
                 SongTable.Cols.PATH + ", " +
                 SongTable.Cols.TITLE + ", " +

@@ -13,9 +13,9 @@ public class SongDbSchema {
             public static final String TITLE = "title";
             public static final String ARTIST = "artist";
             public static final String ALBUM = "album";
-            public static final String DURATION = "duration";
-            public static final String BPM = "bpm";
-            public static final String USE = "use";  // boolean
+            public static final String DURATION = "duration";  // double
+            public static final String BPM = "bpm"; // int
+            public static final String USE = "use";  // boolean but stored as 1 or 0
         }
     }
 }

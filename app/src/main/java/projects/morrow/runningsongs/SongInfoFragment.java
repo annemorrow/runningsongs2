@@ -9,6 +9,13 @@ public class SongInfoFragment extends Fragment {
 
     Song mSong;
 
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        SongLibrary.get(getActivity()).updateSong(mSong);
+    }
+
     public static SongInfoFragment newInstance() {
         return new SongInfoFragment();
     }

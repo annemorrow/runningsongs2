@@ -1,5 +1,6 @@
 package projects.morrow.runningsongs;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -12,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import projects.morrow.runningsongs.SongDbSchema.SongTable;
+
 /**
  * Created by anne on 9/23/15.
  */
@@ -20,8 +23,6 @@ public class SongLibrary {
 
     public static final String TAG = "SongLibrary";
 
-    private List<Song> mSongs; // ones the user has chosen to be part of the running app
-    private List<Song> mAllSongs; // songs found on the device (that the user may then choose to be in the running app)
     private Context mContext;
     private SQLiteDatabase mDatabase;
     private MediaPlayer mMediaPlayer;
@@ -31,18 +32,110 @@ public class SongLibrary {
         if (sSongLibrary == null) {
             sSongLibrary = new SongLibrary(context);
         }
-        sSongLibrary.mAllSongs = new ArrayList<>();
         return sSongLibrary;
     }
 
     private SongLibrary(Context context) {
         mContext = context.getApplicationContext();
         mDatabase = new SongBaseHelper(mContext).getWritableDatabase();
-        mSongs = new ArrayList<>();
     }
 
     public List<Song> getSongs() {
-        return mAllSongs;
+        List<Song> songs = new ArrayList<>();
+
+        SongCursorWrapper cursor = querySongs(null, null);
+
+        try {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                songs.add(cursor.getSong());
+                cursor.moveToNext();
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return songs;
+    }
+
+    public Song getSong(UUID uuid) {
+        SongCursorWrapper cursor = querySongs(
+                SongTable.Cols.UUID + " = ?",
+                new String[] { uuid.toString() }
+        );
+
+        try {
+            if (cursor.getCount() == 0) {
+                return null;
+            }
+
+            cursor.moveToFirst();
+            return cursor.getSong();
+        } finally {
+            cursor.close();
+        }
+    }
+
+    public Song getSong(String title, String artist, String album) {
+        SongCursorWrapper cursor = querySongs(
+                SongTable.Cols.TITLE + " = ? AND " +
+                        SongTable.Cols.ARTIST + " = ? AND " +
+                        SongTable.Cols.ALBUM + " = ?",
+                new String[] { title, artist, album }
+        );
+
+        try {
+            if (cursor.getCount() == 0) {
+                return null;
+            }
+
+            cursor.moveToFirst();
+            return cursor.getSong();
+        } finally {
+            cursor.close();
+        }
+    }
+
+    public void addSong(Song s) {
+        ContentValues values = getContentValues(s);
+        mDatabase.insert(SongTable.NAME, null, values);
+    }
+
+    public void updateSong(Song song) {
+        String uuidString = song.getID().toString();
+        ContentValues values = getContentValues(song);
+
+        mDatabase.update(SongTable.NAME, values,
+                SongTable.Cols.UUID + " = ?",
+                new String[]{uuidString});
+    }
+
+    private static ContentValues getContentValues(Song song) {
+        ContentValues values = new ContentValues();
+        values.put(SongTable.Cols.UUID, song.getID().toString());
+        values.put(SongTable.Cols.PATH, song.getPath());
+        values.put(SongTable.Cols.TITLE, song.getTitle());
+        values.put(SongTable.Cols.ARTIST, song.getArtist());
+        values.put(SongTable.Cols.ALBUM, song.getAlbum());
+        values.put(SongTable.Cols.DURATION, song.getDuration());
+        values.put(SongTable.Cols.BPM, song.getBPM());
+        values.put(SongTable.Cols.USE, song.isUsedInApp() ? 1 : 0);
+
+        return values;
+    }
+
+    private SongCursorWrapper querySongs(String whereClause, String[] whereArgs) {
+        Cursor cursor = mDatabase.query(
+                SongTable.NAME,
+                null, // Columns - null selects all columns
+                whereClause,
+                whereArgs,
+                null, // groupBy
+                null, //having
+                null // orderBy
+        );
+
+        return new SongCursorWrapper(cursor);
     }
 
     public MediaPlayer getMediaPlayer() {
@@ -79,6 +172,8 @@ public class SongLibrary {
         }
     }
 
+
+
     public void findSongs(Context context) {
         String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0";
 
@@ -108,31 +203,18 @@ public class SongLibrary {
             foundSong.setDuration(cursor.getInt(5));
             Log.d(TAG, foundSong.getTitle());
             Log.d(TAG, foundSong.getPath());
-            if (songInList(foundSong)) {
-                foundSong.setUseInApp(true);
+
+            Song oldSong = getSong(foundSong.getTitle(), foundSong.getArtist(), foundSong.getAlbum());
+            if (oldSong != null) {
+                oldSong.setPath(foundSong.getPath());
+                updateSong(oldSong);
+            } else {
+                addSong(foundSong);
             }
-            mAllSongs.add(foundSong);
+
         }
 
 
     }
 
-    private boolean songInList(Song song) {
-        for (Song s : mSongs) {
-            if (s.getTitle().equals(song.getTitle()) && s.getAlbum().equals(song.getAlbum())
-                    && s.getArtist().equals(song.getArtist())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public Song getSong(List<Song> list, UUID uuid) {
-        for (Song s : list) {
-            if (s.getID().equals(uuid)) {
-                return s;
-            }
-        }
-        return null;
-    }
 }

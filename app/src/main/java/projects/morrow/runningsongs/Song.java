@@ -14,12 +14,16 @@ public class Song {
     private String mTitle;
     private String mArtist;
     private String mAlbum;
-    private int mDuration;
+    private double mDuration;
     private int mBPM;
     private boolean mUseInApp;
 
+    public Song(UUID uuid) {
+        mID = uuid;
+    }
+
     public Song() {
-        mID = UUID.randomUUID();
+        this(UUID.randomUUID());
     }
 
     public UUID getID() {
@@ -58,11 +62,11 @@ public class Song {
         mAlbum = album;
     }
 
-    public int getDuration() {
+    public double getDuration() {
         return mDuration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(double duration) {
         mDuration = duration;
     }
 
@@ -74,7 +78,7 @@ public class Song {
         mBPM = BPM;
     }
 
-    public boolean isUseInApp() {
+    public boolean isUsedInApp() {
         return mUseInApp;
     }
 
