@@ -3,4 +3,8 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="title">Title</string>
+    <string name="include">Include In App</string>
+    <string name="beats_per_minute">Beats Per Minute</string>
+    <string name="play_button">Play</string>
 </resources>

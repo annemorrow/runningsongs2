@@ -2,6 +2,7 @@ package projects.morrow.runningsongs;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.provider.MediaStore;
@@ -21,6 +22,8 @@ public class SongLibrary {
 
     private List<Song> mSongs; // ones the user has chosen to be part of the running app
     private List<Song> mAllSongs; // songs found on the device (that the user may then choose to be in the running app)
+    private Context mContext;
+    private SQLiteDatabase mDatabase;
     private MediaPlayer mMediaPlayer;
 
 
@@ -33,6 +36,8 @@ public class SongLibrary {
     }
 
     private SongLibrary(Context context) {
+        mContext = context.getApplicationContext();
+        mDatabase = new SongBaseHelper(mContext).getWritableDatabase();
         mSongs = new ArrayList<>();
     }
 
@@ -114,7 +119,8 @@ public class SongLibrary {
 
     private boolean songInList(Song song) {
         for (Song s : mSongs) {
-            if (s.getTitle().equals(song.getTitle()) && s.getAlbum().equals(song.getAlbum())) {
+            if (s.getTitle().equals(song.getTitle()) && s.getAlbum().equals(song.getAlbum())
+                    && s.getArtist().equals(song.getArtist())) {
                 return true;
             }
         }

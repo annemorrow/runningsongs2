@@ -6,25 +6,36 @@
               android:gravity="center_vertical|center_horizontal"
     >
 
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/play_button"
+        android:id="@+id/play_button"
+        android:layout_marginBottom="30dp"
+        android:padding="5dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"/>
+
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Title"
+        android:text="@string/title"
         android:id="@+id/song_title"
         android:gravity="center_horizontal"/>
 
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Include in App"
+        android:text="@string/include"
         android:id="@+id/include_in_app"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Beats Per Minute"/>
+        android:text="@string/beats_per_minute"/>
 
     <EditText
         android:layout_width="wrap_content"
