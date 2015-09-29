@@ -3,10 +3,13 @@ package projects.morrow.runningsongs;
 import android.media.MediaPlayer;
 import android.net.Uri;
 
+import java.util.UUID;
+
 /**
  * Created by anne on 9/23/15.
  */
 public class Song {
+    private UUID mID;
     private String mPath;
     private String mTitle;
     private String mArtist;
@@ -14,6 +17,14 @@ public class Song {
     private int mDuration;
     private int mBPM;
     private boolean mUseInApp;
+
+    public Song() {
+        mID = UUID.randomUUID();
+    }
+
+    public UUID getID() {
+        return mID;
+    }
 
     public String getPath() {
         return mPath;

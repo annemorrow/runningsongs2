@@ -12,4 +12,12 @@ public class SongInfoFragment extends Fragment {
     public static SongInfoFragment newInstance() {
         return new SongInfoFragment();
     }
+
+    public Song getSong() {
+        return mSong;
+    }
+
+    public void setSong(Song song) {
+        mSong = song;
+    }
 }

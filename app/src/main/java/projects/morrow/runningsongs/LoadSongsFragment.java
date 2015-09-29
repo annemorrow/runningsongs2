@@ -20,6 +20,8 @@ public class LoadSongsFragment extends Fragment {
     private RecyclerView mSongRecyclerView;
     private SongAdapter mAdapter;
 
+    private Song mCurrentSong;
+
     public static LoadSongsFragment newInstance() {
         return new LoadSongsFragment();
     }
@@ -69,7 +71,27 @@ public class LoadSongsFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            mSongLibrary.play(mSong);
+            if (mSongLibrary.getMediaPlayer() == null) {
+                switchTo(mSong);
+            }
+            else if (mCurrentSong.equals(mSong)) {
+                if (mSongLibrary.getMediaPlayer().isPlaying()) {
+                    pause();
+                } else {
+                    mSongLibrary.getMediaPlayer().start();
+                }
+            } else {
+                switchTo(mSong);
+            }
+        }
+
+        private void pause() {
+            mSongLibrary.getMediaPlayer().pause();
+        }
+
+        private void switchTo(Song song) {
+            mSongLibrary.switchTo(song);
+            mCurrentSong = song;
         }
     }
 

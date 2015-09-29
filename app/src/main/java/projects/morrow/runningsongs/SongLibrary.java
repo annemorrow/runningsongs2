@@ -2,12 +2,14 @@ package projects.morrow.runningsongs;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.provider.MediaStore;
 import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by anne on 9/23/15.
@@ -38,21 +40,37 @@ public class SongLibrary {
         return mAllSongs;
     }
 
-    public void play(Song song){
-        if (mMediaPlayer != null) {
-            try {
-                mMediaPlayer.stop();
-            } finally {
+    public MediaPlayer getMediaPlayer() {
+        return mMediaPlayer;
+    }
 
-            }
-        }
+    public void switchTo(Song song){
+        if (mMediaPlayer != null) {
+            mMediaPlayer.reset();
+        } else {
             mMediaPlayer = new MediaPlayer();
+        }
         try {
+            mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mMediaPlayer.setDataSource(song.getPath());
             mMediaPlayer.prepare();
             mMediaPlayer.start();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public void pause() {
+        if (mMediaPlayer != null) {
+            mMediaPlayer.pause();
+        }
+    }
+
+    public boolean isPlaying() {
+        if (mMediaPlayer == null) {
+            return false;
+        } else {
+            return mMediaPlayer.isPlaying();
         }
     }
 
@@ -101,5 +119,14 @@ public class SongLibrary {
             }
         }
         return false;
+    }
+
+    public Song getSong(List<Song> list, UUID uuid) {
+        for (Song s : list) {
+            if (s.getID().equals(uuid)) {
+                return s;
+            }
+        }
+        return null;
     }
 }
