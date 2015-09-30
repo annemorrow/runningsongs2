@@ -15,7 +15,7 @@ public class Song {
     private String mArtist;
     private String mAlbum;
     private double mDuration;
-    private int mBPM;
+    private int mBPM = 0;
     private boolean mUseInApp;
 
     public Song(UUID uuid) {

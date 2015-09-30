@@ -18,11 +18,11 @@
         android:paddingRight="15dp"/>
 
     <TextView
+        android:id="@+id/song_title"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/title"
-        android:id="@+id/song_title"
         android:gravity="center_horizontal"/>
 
     <CheckBox

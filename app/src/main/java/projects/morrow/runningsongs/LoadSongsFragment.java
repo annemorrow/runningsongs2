@@ -1,5 +1,6 @@
 package projects.morrow.runningsongs;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -7,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -56,13 +58,31 @@ public class LoadSongsFragment extends Fragment {
     private class SongHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView mTitleTextView;
+        private Button mPlayButton;
         private Song mSong;
 
         public SongHolder(View itemView) {
             super(itemView);
 
-            mTitleTextView = (TextView) itemView;
-            mTitleTextView.setOnClickListener(this);
+            mTitleTextView = (TextView) itemView.findViewById(R.id.list_item_title_view);
+            mPlayButton = (Button) itemView.findViewById(R.id.list_item_play_button);
+            itemView.setOnClickListener(this);
+            mPlayButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mSongLibrary.getMediaPlayer() == null) {
+                        switchTo(mSong);
+                    } else if (mCurrentSong.equals(mSong)) {
+                        if (mSongLibrary.getMediaPlayer().isPlaying()) {
+                            pause();
+                        } else {
+                            mSongLibrary.getMediaPlayer().start();
+                        }
+                    } else {
+                        switchTo(mSong);
+                    }
+                }
+            });
         }
 
         public void bindSong(Song song) {
@@ -72,18 +92,8 @@ public class LoadSongsFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            if (mSongLibrary.getMediaPlayer() == null) {
-                switchTo(mSong);
-            }
-            else if (mCurrentSong.equals(mSong)) {
-                if (mSongLibrary.getMediaPlayer().isPlaying()) {
-                    pause();
-                } else {
-                    mSongLibrary.getMediaPlayer().start();
-                }
-            } else {
-                switchTo(mSong);
-            }
+            Intent intent = SongInfoFragment.newIntent(getActivity(), mSong.getID());
+            startActivity(intent);
         }
 
         private void pause() {
@@ -108,7 +118,7 @@ public class LoadSongsFragment extends Fragment {
         public SongHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
             View view = layoutInflater
-                    .inflate(android.R.layout.simple_list_item_1, parent, false);
+                    .inflate(R.layout.list_item_song, parent, false);
             return new SongHolder(view);
         }
 
